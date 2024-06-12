@@ -6,7 +6,6 @@ use App\Models\Type;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTypeRequest;
 use App\Http\Requests\UpdateTypeRequest;
-use Illuminate\Http\Request;
 
 class TypeController extends Controller
 {
@@ -33,8 +32,9 @@ class TypeController extends Controller
     public function store(StoreTypeRequest $request)
     {
         Type::create($request->validated());
-        return redirect()->route('admin.types.index')->with('message', 'Tipo creato correttamente');
+        return redirect()->route('admin.types.index')->with('message', 'Nuova tipologia creata correttamente');
     }
+
 
     /**
      * Display the specified resource.
@@ -58,7 +58,7 @@ class TypeController extends Controller
     public function update(UpdateTypeRequest $request, Type $type)
     {
         $type->update($request->validated());
-        return redirect()->route('admin.types.index')->with('message', 'Tipo aggiornato correttamente');
+        return redirect()->route('admin.types.index')->with('message', 'Tipologia aggiornata correttamente');
     }
 
     /**
@@ -67,6 +67,6 @@ class TypeController extends Controller
     public function destroy(Type $type)
     {
         $type->delete();
-        return redirect()->route('admin.types.index')->with('message', 'Tipo eliminato correttamente');
+        return redirect()->route('admin.types.index')->with('message', 'Tipologia eliminata correttamente');
     }
 }
