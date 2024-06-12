@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use App\Models\Type;
 
 
 
@@ -28,8 +29,8 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
-        return view('admin.projects.create');
+        $types = Type::all();
+        return view('admin.projects.create', compact('types'));
     }
 
     /**
@@ -45,7 +46,7 @@ class ProjectController extends Controller
             $path = $request->file('image')->store('images', 'public');
             $form_data['image'] = $path;
         }
-
+        $form_data['type_id'] = $request->input('type_id'); // Aggiunto il campo type_id
         $newProject = Project::create($form_data);
 
         return redirect()->route('admin.projects.index')->with('message', 'Nuovo progetto creato correttamente');
@@ -55,6 +56,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
+        $project->load('type');
         return view('admin.projects.show', compact('project'));
     }
 
@@ -63,8 +65,8 @@ class ProjectController extends Controller
      */
     public function edit(project $project)
     {
-        //
-        return view('admin.projects.edit', compact('project'));
+        $types = Type::all();
+        return view('admin.projects.edit', compact('project', 'types'));
     }
 
     /**
@@ -87,7 +89,7 @@ class ProjectController extends Controller
         $path = $request->file('image')->store('images', 'public');
         $form_data['image'] = $path;
     }
-    
+    $form_data['type_id'] = $request->input('type_id'); // Aggiunto il campo type_id
     $project->update($form_data);
     
     return redirect()->route('admin.projects.index')->with('message', 'Progetto aggiornato correttamente');
