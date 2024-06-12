@@ -14,7 +14,7 @@
         </div>
     @endif
 
-    <form action="{{ route('admin.projects.update', $project->slug) }}" method="POST">
+    <form action="{{ route('admin.projects.update', $project->slug) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="form-group">
@@ -24,6 +24,13 @@
         <div class="form-group">
             <label for="content">Contenuto</label>
             <textarea name="content" id="content" class="form-control" required>{{ $project->content }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="image" class="form-label">Project Image</label>
+            <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image">
+            @error('image')
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
         </div>
         <button type="submit" class="btn btn-primary">Salva</button>
     </form>

@@ -18,7 +18,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        
+
         $projects = Project::all();
         return view('admin.projects.index', compact('projects'));
     }
@@ -30,7 +30,6 @@ class ProjectController extends Controller
     {
         //
         return view('admin.projects.create');
-
     }
 
     /**
@@ -38,9 +37,17 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
+
         $form_data = $request->validated();
         $form_data['slug'] = Project::generateSlug($form_data['title']);
-        $newProject = Project::create($form_data);        
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('images', 'public');
+            $form_data['image'] = $path;
+        }
+
+        $newProject = Project::create($form_data);
+
         return redirect()->route('admin.projects.index')->with('message', 'Nuovo progetto creato correttamente');
     }
     /**
@@ -58,7 +65,6 @@ class ProjectController extends Controller
     {
         //
         return view('admin.projects.edit', compact('project'));
-
     }
 
     /**
@@ -66,13 +72,25 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
-        $form_data = $request->all();
-        if ($project->title !== $form_data['title']) {
-            $form_data['slug'] = Project::generateSlug($form_data['title']);
+        $form_data = $request->validated();
+    
+    if ($project->title !== $form_data['title']) {
+        $form_data['slug'] = Project::generateSlug($form_data['title']);
+    }
+    
+    if ($request->hasFile('image')) {
+        // Elimina l'immagine precedente se esiste
+        if ($project->image) {
+            Storage::disk('public')->delete($project->image);
         }
-        $project->update($form_data);
-        return redirect()->route('admin.projects.index')->with('message', 'Progetto aggiornato correttamente');
-
+        // Salva la nuova immagine
+        $path = $request->file('image')->store('images', 'public');
+        $form_data['image'] = $path;
+    }
+    
+    $project->update($form_data);
+    
+    return redirect()->route('admin.projects.index')->with('message', 'Progetto aggiornato correttamente');
     }
 
 

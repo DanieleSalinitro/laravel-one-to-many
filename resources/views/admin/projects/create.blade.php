@@ -1,7 +1,6 @@
 @extends('layouts.admin')
 @section('title', 'Create Project')
 
-
 @section('content')
 <section>
     <h1>Crea nuovo progetto</h1>
@@ -19,10 +18,15 @@
         </div>
         <div class="mb-3">
             <label for="content" class="form-label">Contenuto</label>
-            <textarea class="form-control @error('content') is-invalid @enderror" id="content" name="content" required>
-                {{ old('content') }}
-            </textarea>
+            <textarea class="form-control @error('content') is-invalid @enderror" id="content" name="content" required>{{ old('content') }}</textarea>
             @error('content')
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="mb-3">
+            <label for="image" class="form-label">Project Image</label>
+            <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image">
+            @error('image')
                 <div class="alert alert-danger">{{ $message }}</div>
             @enderror
         </div>
